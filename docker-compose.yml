@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:17.4-bookworm
+    environment:
+      - POSTGRES_DB=ai-todo
+      - POSTGRES_USER=ai-todo
+      - POSTGRES_PASSWORD=pass
+    ports:
+      - "15432:5432"
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    working_dir: /app
+    volumes:
+      - ./api:/app
+    ports:
+      - "4200:4200"
+    command: go run /app/cmd/server/main.go
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    working_dir: /app
+    volumes:
+      - ./client:/app
+    ports:
+      - "3000:3000"
+    environment:
+      - HOST=0.0.0.0
+    stdin_open: true
+    tty: true
