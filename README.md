@@ -64,10 +64,28 @@
 
 # Todo
 ## Backlog
-- [ ] create roadmap
-    - list out features
+- [ ] Create todo
+- [ ] Mark todo done
+- [ ] Edit todo
+- [ ] Delete todo
+- [ ] List and search todo
+- [ ] Create project
+- [ ] Edit project
+- [ ] Delete project
+- [ ] List and search Project
+- [ ] Project detail
+- [ ] update list and search todo
+    - search by project
+- [ ] Create tag
+- [ ] Edit tag
+- [ ] Delete tag
+- [ ] update todo to attach
+- [ ] update list and search todo
+    - search by tag
 
 ## Done
+- [x] create roadmap
+    - list out features
 - [x] try out boomerang mode
 - [x] fix websocket error for local dev server
 - [x] play around the architect mode

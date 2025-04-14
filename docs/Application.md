@@ -1,25 +1,49 @@
 # General
-- This is an application `ai-todo` that helps organize and manage todos for the user.
+- This is an application `ai-todos` that helps organize and manage todos for the user.
 
-# Domain models
-## User
-- Properties
-    - id: int
-    - name: string
-    - email: string
-
-## Todo
-- Properties
-    - id: int
-    - title: string
-    - status: enum (todo, done)
+---
 
 # Features
 ## Signup
-- **General**: ユーザーがai-todoにユーザー登録するための機能を提供する
+### General
+- Allow user to sign up to ai-todos.
 
-- **Flow**:
-  1. ユーザーはサインアップページを開く
-  2. ユーザーはEメールとパスワードを入力する
-  3. ユーザーはフォームを送信する
-  4. 登録が成功すると、アプリのトップページにリダイレクトされる
+### Flow
+#### Success flow
+1. User opens sign up page
+2. User fills form with email and password
+3. User submits form
+4. If sign up was a success, user will be redirected to top page of the app
+
+## Login
+### General
+- Allow user to login to ai-todos.
+
+#### Success flow
+1. User opens login page
+2. User fills form with email and password
+3. User submits form
+4. If login was a success, user will be redirected to top page of the app
+
+## Template
+### General
+- 
+
+#### Success flow
+1. a
+
+---
+
+# Domain models
+
+## User
+### Properties
+- id: int
+- name: string
+- email: string
+
+## Todo
+### Properties
+- id: int
+- title: string
+- status: enum (todo, done)
