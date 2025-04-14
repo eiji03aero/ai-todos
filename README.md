@@ -45,20 +45,31 @@
     - docker containerで、npmパッケージが見つからないエラーがでて修正してもらおうとしたときに、あっちこっち行ってさっさと調査に移らなかった
     - これはmodelの良し悪しも関係あるかもしれない
     - ただし、以前出した指示を覚えていて、あとからでも拾ってくれるのは有能
+    - そもそもdebugモードを使った方がいいかも
 - tailwindのスタイルが当たらない件は直せなかった
     - コードから原因を推測するのはたしかに難しかったと思われる
 - 設定ファイルにimportと設定値を追加するのがどうしてもうまくいかない
     - import文追加して終わりになっとる
+- 外部ページの情報を読み込ませるときは、@ディレクティブを使う
+- 問題の解決の際には、debugモードを使う
+- Boomerang mode
+    - まるばつゲームの実装をお願いした
+    - 仕様検討の壁打ちからやってくれると思ったが、いきなり実装から取り掛かってしまった
+        - 内容的に確認するまでもないと判断したのだろうか
+    - 既存の機能を削除して、まるばつゲームと入れ替えてしまった。指示が悪かったかも
+    - 実装はすぐできた。すげーぞこれ
+    - だが、アプリの実装では、検討から丁寧にやるcustom modeが必要そう
 
 ---
 
 # Todo
 ## Backlog
-- [ ] fix websocket error for local dev server
 - [ ] create roadmap
     - list out features
 
 ## Done
+- [x] try out boomerang mode
+- [x] fix websocket error for local dev server
 - [x] play around the architect mode
     - implement helloworlder
 - [x] implement sample codebase

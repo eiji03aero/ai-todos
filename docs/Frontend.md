@@ -129,3 +129,8 @@ Let's say we have `auth` as a slice, `ui` and `model` as segments.
 ### Designing implementation
 - Instead of directly putting implementations in pages layer, try to utilize widgets, features, entities, shared layers as much as possible
 - If you have doubts to which layer to put, ask the user for opinion
+
+### React implementation
+- Try to extract component / hooks / functions if you think they have reusability.
+  - Extract them to the other layers than pages, like widgets, features, entities, shared
+- Try to extract logics to react custom hook from component on purpose basis.
