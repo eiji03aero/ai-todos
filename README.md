@@ -6,23 +6,37 @@
 ---
 
 # Documents
-## How feature development works
-- Create feature spec document
-    - Update domain model
-    - Update Features
-- Create api spec
-- Generate openapi doc
-- Create page spec
+## Kinds of design files
+- Application overview file
+    - `docs/Application.md`
+    - defines domain models
+- Feature design file
+    - `docs/features/[feature-name].md`
+    - have file path to related to api / ui design file
+- Api design file
+    - `docs/apis/[api-name].md`
+- Api spec file
+    - `docs/openapi.yml`
+    - to be updated based on api design file
+- UI design document
+    - `docs/pages/[page-name].md`
 
-## Document details
-- docs/Application.md
-    - By engineer / AI
-- docs/Backend.md
-    - By AI
-- docs/Codebase.md
-    - By AI
-- docs/Frontend.md
-    - By engineer / AI
+## How feature development works
+- Create a feature design file
+    - defines overview
+    - list out domain models
+- Create an api design to implement / update
+    - design apis by creating documents
+    - update openapi.yml file
+    - append api design file path to the feature design file
+- Create a ui design document
+    - design pages by creating documents
+    - append page design file path to the feature design file
+- Implement apis
+    - based on feature design file, implement api one by one
+    - implement unit tests
+- Implement pages
+    - based on feature design file, implement page one by one
 
 ---
 
@@ -59,11 +73,65 @@
     - 既存の機能を削除して、まるばつゲームと入れ替えてしまった。指示が悪かったかも
     - 実装はすぐできた。すげーぞこれ
     - だが、アプリの実装では、検討から丁寧にやるcustom modeが必要そう
+- new_task tool
+    - なぜか指定したつもりのゴールで終わらず、さらに同じsub_taskを作り続けようとする
+        - apiの仕様詳細作成のタスクをやって、詳細を承認したら、また仕様詳細のサブタスクを作ろうとする
+        - あああ、サブタスクを作るときに、そのカスタムモードで依頼していたため、そのモードのデフォルトの動作をなぞってしまっていたのが原因ぽい
+- tasntack routerの設定変更
+    - routeDirectoryをFSDに合わせたくて、ドキュメントのURLをつけてお願いしたが、pacakge.jsonやgen.tsファイルを見に行ったりして、こりゃあダメだという感じ
+    - トレーニングされていない内容はとことん弱い
+- インポートパスのリファクタ
+    - フォルダを階層移動したので移動したファイルのインポートパスが無効になっているはずだから直しておいてとやったがうまくいかず
+        - 一つ一つのファイルをLLM投げ始めた
+        - 結局修正できず
+    - tscを使ってやってとお願いした
+- context windowの上限が厳しい
+    - haikuの上限？で10kが実質上限となるが、これくらいだとapi一本作っている間に達してしまう
+    - なのでtaskをうまいこと分割して、tokenが嵩張らないように進めていく必要がありそう
+- やはりタスクを切るのに、明確なゴールを指定してあげないと行けなさそう
+    - apiを実装してというタスクがあったときに、handlerまでやっておわりになってしまっていた
+    - api serverに公開するためにapi routeを登録するところがまるまるぬけていた
+- contextが足りていないとどうしても頓珍漢しがち
+    - あとからdocker composeでマウントしたディレクトリがないことをしらず、pathを直そうとする
+    - docker composeのリスタートが必要なのに
+- 結局ライブラリの使い方を調べてあげる必要が出てくる
+    - viteのenv varsの仕組みを使ってと言ったら、ほんとうにあるのかわからん書き方をし始めて、調べるハメに
+- 厳密なコーディングルールを守らせるのは難しそう
+    - rulesに書いておいても、import pathをbarrelから行わせられない
+- openapi-fetchとの相性
+    - どうにも、型を自動生成するためか、$api.useQueryなどの引数をうまく埋められない
+    - 一発目は大体頓珍漢なことをする
+    - とりあえずファイルを生成させて、typescriptエラーを確認させて、修正をさせるという選択肢はあるが、これも直せるとは限らない
+- signupのフロントエンド実装
+    - 結構メチャクチャなものが上がってきた
+    - labelが2重
+    - バリデーションエラーが最初から出ている
+        - これはブラウザによるinput valueの保管によりバリデーションが走ってしまっていた模様
+    - 言うまでもなくUIがいまいち
+    - formは普通にpagesのuiに収めるのが良さそう
+- 部分的なリファクタによる弊害
+    - コンポーネントを切り出したところ、ナビゲーションのロジックが重複してしまった
+    - もともとページコンポーネントで定義していたが、切り出した先のフォームにもリダイレクトのロジックを載せてしまった。こういうのは、PR単位のレビューでないとふせぎにくい。ファイル単位で変更を見せられてもふんふんいっていると見逃してしまう
+- 開発の切り口
+    -　今の所、機能単位で開発を始める想定だが
+    - 実装都合という切り口もあるかも
+        - appState的な
+- 結合した時の修正が結局必要かつ面倒
+    - api作って、フロントつくって結合して動作確認の手順が必要
+    - 結合試験もやらせてしまいたいが・・・
 
 ---
 
 # Todo
 ## Backlog
+- [ ] Login
+    - [ ] unify the designer mode into one awesome-designer
+    - [ ] api
+        - make sure to implement cookie authentication
+        - implement appState endpoint to retrieve user info
+    - [ ] ui
+- [ ] Top page
+- [ ] Nav layout
 - [ ] Create todo
 - [ ] Mark todo done
 - [ ] Edit todo
@@ -84,6 +152,14 @@
     - search by tag
 
 ## Done
+- [x] Signup
+    - [x] api
+        - implement awesome-engineer role as well
+    - [x] ui
+        - implement awesome-engineer role as well
+- [x] implement barney stinson mode
+- [x] implement centered form layout
+- [x] install all the shadcn components
 - [x] create roadmap
     - list out features
 - [x] try out boomerang mode

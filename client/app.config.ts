@@ -5,6 +5,10 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   tsr: {
     appDirectory: 'src',
+    routesDirectory: './src/app/routes',
+    generatedRouteTree: './src/routeTree.gen.ts',
+    routeFileIgnorePrefix: '-',
+    quoteStyle: 'single'
   },
   vite: {
     plugins: [

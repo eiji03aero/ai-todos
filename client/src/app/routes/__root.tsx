@@ -6,6 +6,23 @@ import {
 } from '@tanstack/react-router'
 import appCss from "@/app/ui/app.css?url"
 import type { ReactNode } from 'react'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+    },
+  },
+})
+
+function Providers({ children }: { children: ReactNode }) {
+  return (
+    <QueryClientProvider client={queryClient}>
+      {children}
+    </QueryClientProvider>
+  )
+}
 
 export const Route = createRootRoute({
   head: () => ({
@@ -18,7 +35,7 @@ export const Route = createRootRoute({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'ai-todo',
+        title: 'ai-todos',
       },
     ],
     links: [
@@ -34,14 +51,16 @@ export const Route = createRootRoute({
 function RootComponent() {
   return (
     <RootDocument>
-      <Outlet />
+      <Providers>
+        <Outlet />
+      </Providers>
     </RootDocument>
   )
 }
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html>
+    <html className="dark">
       <head>
         <HeadContent />
       </head>

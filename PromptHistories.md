@@ -1,3 +1,24 @@
+# Setting up openapi-fetch with react-query
+```
+can you do following?
+
+- research and introduce openapi-fetch and openapi-react-query while following instructions at @https://openapi-ts.dev/openapi-react-query/  
+- please define a npm script that do the generation work for this package
+```
+
+補足:
+- これくらいなら対話しつつうまく行っていそう
+
+# Signup feature prompts
+```
+I want to create a feature design for SignUp
+
+1. User opens signup page
+2. User fills signup form
+3. User submits the signup form
+4. If signup was a success, user will be redirected to top page
+```
+
 # Implement sample feature on helloworld
 ```
 /helloworldページに以下の機能を実装するための設計をしてください

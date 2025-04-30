@@ -4,8 +4,8 @@ services:
   db:
     image: postgres:17.4-bookworm
     environment:
-      - POSTGRES_DB=ai-todo
-      - POSTGRES_USER=ai-todo
+      - POSTGRES_DB=ai_todo
+      - POSTGRES_USER=ai_todo_user
       - POSTGRES_PASSWORD=pass
     ports:
       - "15432:5432"
@@ -19,7 +19,16 @@ services:
       - ./api:/app
     ports:
       - "4200:4200"
-    command: go run /app/cmd/server/main.go
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=ai_todo_user
+      - DB_PASSWORD=pass
+      - DB_NAME=ai_todo
+      - DB_SSLMODE=disable
+    command: sh /app/entrypoint.sh
+    depends_on:
+      - db
 
   client:
     build:
@@ -28,6 +37,7 @@ services:
     working_dir: /app
     volumes:
       - ./client:/app
+      - ./docs:/docs
     ports:
       - "3000:3000"
     environment:

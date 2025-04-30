@@ -1,0 +1,130 @@
+openapi: 3.0.0
+info:
+  title: User Authentication API
+  version: 1.0.0
+  description: APIs for user authentication, signup, and account management
+
+paths:
+  /api/auth/check-email:
+    get:
+      summary: Check email uniqueness
+      parameters:
+        - in: query
+          name: email
+          required: true
+          schema:
+            type: string
+            format: email
+      responses:
+        '200':
+          description: Email uniqueness check result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  isUnique:
+                    type: boolean
+        '400':
+          description: Invalid email format
+        '500':
+          description: Server error during email check
+
+  /api/auth/signup:
+    post:
+      summary: User signup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+                - password_confirmation
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  minLength: 8
+                  description: Password must contain at least one uppercase, one lowercase, and one number
+                password_confirmation:
+                  type: string
+                  minLength: 8
+      responses:
+        '201':
+          description: User successfully created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  email:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '409':
+          description: Email already exists
+        '500':
+          description: Internal server error
+
+  /api/auth/login:
+    post:
+      summary: User login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  description: User's account password
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  email:
+                    type: string
+        '400':
+          description: Invalid request format
+        '401':
+          description: Invalid credentials
+        '500':
+          description: Internal server error
+
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string

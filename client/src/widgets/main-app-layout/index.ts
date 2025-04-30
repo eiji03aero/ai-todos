@@ -1,0 +1,1 @@
+export { MainAppLayout } from '@/widgets/main-app-layout/ui/MainAppLayout'

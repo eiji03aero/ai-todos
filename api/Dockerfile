@@ -9,6 +9,9 @@ COPY go.mod go.sum ./
 # Download dependencies
 RUN go mod download
 
+# Install reflex
+RUN go install github.com/cespare/reflex@latest
+
 # Copy the source code
 COPY . .
 

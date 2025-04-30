@@ -1,0 +1,1 @@
+export { TopPage } from '@/pages/top/ui/TopPage'

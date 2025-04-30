@@ -10,11 +10,32 @@
 
 // Import Routes
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as HelloworldImport } from './routes/helloworld'
-import { Route as IndexImport } from './routes/index'
+import { Route as rootRoute } from './app/routes/__root'
+import { Route as TestCenteredLayoutImport } from './app/routes/test-centered-layout'
+import { Route as SignupImport } from './app/routes/signup'
+import { Route as HogeImport } from './app/routes/hoge'
+import { Route as HelloworldImport } from './app/routes/helloworld'
+import { Route as IndexImport } from './app/routes/index'
 
 // Create/Update Routes
+
+const TestCenteredLayoutRoute = TestCenteredLayoutImport.update({
+  id: '/test-centered-layout',
+  path: '/test-centered-layout',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const SignupRoute = SignupImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const HogeRoute = HogeImport.update({
+  id: '/hoge',
+  path: '/hoge',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const HelloworldRoute = HelloworldImport.update({
   id: '/helloworld',
@@ -46,6 +67,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HelloworldImport
       parentRoute: typeof rootRoute
     }
+    '/hoge': {
+      id: '/hoge'
+      path: '/hoge'
+      fullPath: '/hoge'
+      preLoaderRoute: typeof HogeImport
+      parentRoute: typeof rootRoute
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupImport
+      parentRoute: typeof rootRoute
+    }
+    '/test-centered-layout': {
+      id: '/test-centered-layout'
+      path: '/test-centered-layout'
+      fullPath: '/test-centered-layout'
+      preLoaderRoute: typeof TestCenteredLayoutImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -54,36 +96,57 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/helloworld': typeof HelloworldRoute
+  '/hoge': typeof HogeRoute
+  '/signup': typeof SignupRoute
+  '/test-centered-layout': typeof TestCenteredLayoutRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/helloworld': typeof HelloworldRoute
+  '/hoge': typeof HogeRoute
+  '/signup': typeof SignupRoute
+  '/test-centered-layout': typeof TestCenteredLayoutRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/helloworld': typeof HelloworldRoute
+  '/hoge': typeof HogeRoute
+  '/signup': typeof SignupRoute
+  '/test-centered-layout': typeof TestCenteredLayoutRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/helloworld'
+  fullPaths: '/' | '/helloworld' | '/hoge' | '/signup' | '/test-centered-layout'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/helloworld'
-  id: '__root__' | '/' | '/helloworld'
+  to: '/' | '/helloworld' | '/hoge' | '/signup' | '/test-centered-layout'
+  id:
+    | '__root__'
+    | '/'
+    | '/helloworld'
+    | '/hoge'
+    | '/signup'
+    | '/test-centered-layout'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   HelloworldRoute: typeof HelloworldRoute
+  HogeRoute: typeof HogeRoute
+  SignupRoute: typeof SignupRoute
+  TestCenteredLayoutRoute: typeof TestCenteredLayoutRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   HelloworldRoute: HelloworldRoute,
+  HogeRoute: HogeRoute,
+  SignupRoute: SignupRoute,
+  TestCenteredLayoutRoute: TestCenteredLayoutRoute,
 }
 
 export const routeTree = rootRoute
@@ -97,7 +160,10 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/helloworld"
+        "/helloworld",
+        "/hoge",
+        "/signup",
+        "/test-centered-layout"
       ]
     },
     "/": {
@@ -105,6 +171,15 @@ export const routeTree = rootRoute
     },
     "/helloworld": {
       "filePath": "helloworld.tsx"
+    },
+    "/hoge": {
+      "filePath": "hoge.tsx"
+    },
+    "/signup": {
+      "filePath": "signup.tsx"
+    },
+    "/test-centered-layout": {
+      "filePath": "test-centered-layout.tsx"
     }
   }
 }

@@ -1,109 +1,120 @@
 # Backend Development Guidelines
 
-## 技術スタック
+## Technology Stack
 
-### 言語: Golang
-- バージョン: 最新の安定版 (1.22以降を推奨)
-- 特徴:
-  - 高パフォーマンス
-  - 静的型付け
-  - 並行処理のサポート
-  - コンパイル時の型安全性
+### Language: Golang
+- Version: Latest stable version (Recommended 1.24 or later)
+- Features:
+  - High performance
+  - Static typing
+  - Concurrency support
+  - Compile-time type safety
 
-### HTTPサーバーフレームワーク: Gin
-- 選定理由:
-  - 高速なルーティング
-  - 軽量で柔軟
-  - ミドルウェアのサポート
-  - 優れたパフォーマンス
+### HTTP Server Framework: Gin
+- Reasons for selection:
+  - Fast routing
+  - Lightweight and flexible
+  - Middleware support
+  - Excellent performance
 
 ### ORM: Gorm
-- 選定理由:
-  - 豊富な機能セット
-  - データベース抽象化
-  - マイグレーションサポート
-  - 複雑なクエリの簡単な実装
+- Reasons for selection:
+  - Rich feature set
+  - Database abstraction
+  - Migration support
+  - Easy implementation of complex queries
 
-## オニオンアーキテクチャ
+## Onion Architecture
 
-### フォルダ構成
+### Folder Structure
 
 ```
 backend/
 │
-├── cmd/                  # アプリケーションのエントリーポイント
+├── cmd/                  # Application entry points
 │   └── server/
 │       └── main.go
 │
-├── internal/             # 内部パッケージ (外部から参照不可)
-│   ├── domain/           # ドメインモデルとビジネスロジック
-│   │   ├── models/       # エンティティ定義
-│   │   └── interfaces/   # インターフェース定義
+├── internal/             # Internal packages (not accessible from outside)
+│   ├── domain/           # Domain models and business logic
+│   │   ├── models/       # Entity definitions
+│   │   └── interfaces/   # Interface definitions
 │   │
-│   ├── infrastructure/   # 外部との接続実装
-│   │   ├── database/     # データベース接続
-│   │   ├── repositories/ # データアクセス層
-│   │   └── api/          # 外部API接続
+│   ├── infrastructure/   # External connection implementations
+│   │   ├── database/     # Database connections
+│   │   ├── repositories/ # Data access layer
+│   │   └── api/          # External API connections
 │   │
-│   ├── application/      # アプリケーションサービス
-│   │   ├── services/     # ユースケース実装
-│   │   └── dto/          # データ転送オブジェクト
+│   ├── application/      # Application services
+│   │   ├── services/     # Use case implementations
+│   │   └── dto/          # Data transfer objects
 │   │
-│   └── presentation/     # HTTPハンドラー
-│       ├── handlers/     # リクエスト処理
-│       └── middleware/   # 共通ミドルウェア
+│   └── presentation/     # HTTP handlers
+│       ├── handlers/     # Request processing
+│       └── middleware/   # Common middleware
 │
-├── pkg/                  # 外部から利用可能な共通パッケージ
-│   └── utils/            # 汎用ユーティリティ
+├── pkg/                  # Common packages accessible from outside
+│   └── utils/            # Generic utilities
 │
-├── configs/              # 設定ファイル
+├── configs/              # Configuration files
 │
-└── migrations/           # データベースマイグレーション
+└── migrations/           # Database migrations
 ```
 
-### アーキテクチャの利点
-- 関心の分離
-- テスタビリティの向上
-- モジュール性
-- 依存関係の明確な制御
+### Architecture Advantages
+- Separation of concerns
+- Improved testability
+- Modularity
+- Clear dependency control
 
-## 開発ガイドライン
+## Development Guidelines
 
-1. **依存性の方向**
-   - 内側の層は外側の層に依存してはいけない
-   - ドメイン層は最も内側に配置し、他の層から独立
+1. Dependency Direction
+   - Inner layers must not depend on outer layers
+   - Domain layer is placed in the innermost layer and remains independent of other layers
 
-2. **インターフェース駆動開発**
-   - 具象実装よりもインターフェースに依存
-   - 依存性逆転の原則を遵守
+2. Interface-Driven Development
+   - Depend on interfaces rather than concrete implementations
+   - Adhere to the Dependency Inversion Principle
 
-3. **エラーハンドリング**
-   - カスタムエラー型の活用
-   - エラーのラッピングと詳細な情報提供
+3. Error Handling
+   - Utilize custom error types
+   - Wrap errors and provide detailed information
 
-4. **セキュリティ**
-   - 入力バリデーション
-   - 適切な認証・認可メカニズム
-   - 安全なデータベース操作
+4. Security
+   - Input validation
+   - Appropriate authentication and authorization mechanisms
+   - Secure database operations
 
-## 推奨ツール・ライブラリ
+5. Where to start implementation
+   - Try to proceed with implementation from the less dependent modules
 
-- テスティング: testify
-- ロギング: zap
-- 設定管理: viper
-- バリデーション: validator
-- 依存性注入: wire
+6. ALways create unit test
+   - Make sure to write unit test after implementation
 
-## パフォーマンスと最適化
+7. ALways create integration test for apis
+   - Make sure to create integration test after implementing an api
 
-- コネクションプーリング
-- キャッシュ戦略
-- インデックスの適切な設計
-- クエリの最適化
+8. Run commands inside docker container
+    - Make sure to run commands (like installing package) inside docker compose's api container
 
-## 継続的な改善
+## Local Development
 
-- コードレビュー
-- 定期的なリファクタリング
-- パフォーマンスプロファイリング
-- セキュリティ監査
+### Hot Reloading
+- We use [Reflex](https://github.com/cespare/reflex) for hot reloading during development
+- Reflex automatically restarts the Go application when source files change
+- To use reflex in development:
+  ```bash
+  # Inside the API docker container
+  reflex -r '\.go$' -s -- sh -c 'go run /app/cmd/server/main.go'
+  ```
+- Configuration can be customized to watch specific file patterns or exclude certain directories
+
+## Architectural points
+
+- API path design
+   - Please make sure to treat `docs/openapi.yml` spec file as an absolute truth
+   - Make them based on the idea of restful for consistent api path rules.
+   - Make sure to prefix the path with `/api/`
+- ID for domain models
+   * Use uuid v4 for the identifier of domain models
