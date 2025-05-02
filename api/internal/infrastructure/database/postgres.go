@@ -64,5 +64,6 @@ func MigrateDatabase(db *gorm.DB) error {
 	// Migrate all repository models
 	return db.AutoMigrate(
 		&repoModels.User{},
+		&repoModels.UserSession{},
 	)
 }

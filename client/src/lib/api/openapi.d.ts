@@ -158,6 +158,8 @@ export interface paths {
                         email: string;
                         /** @description User's account password */
                         password: string;
+                        /** @description Persist login session across browser sessions */
+                        remember_me?: boolean;
                     };
                 };
             };
@@ -169,8 +171,16 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            id?: string;
-                            email?: string;
+                            user?: {
+                                id?: string;
+                                email?: string;
+                            };
+                            session?: {
+                                token?: string;
+                                /** Format: date-time */
+                                expires_at?: string;
+                                is_remembered?: boolean;
+                            };
                         };
                     };
                 };
@@ -183,6 +193,13 @@ export interface paths {
                 };
                 /** @description Invalid credentials */
                 401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Validation error */
+                422: {
                     headers: {
                         [name: string]: unknown;
                     };

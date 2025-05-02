@@ -26,8 +26,9 @@ type SignUpRequest struct {
 }
 
 type LoginRequest struct {
-	Email    string `json:"email" binding:"required,email"`
-	Password string `json:"password" binding:"required"`
+	Email      string `json:"email" binding:"required,email"`
+	Password   string `json:"password" binding:"required"`
+	RememberMe bool   `json:"remember_me"`
 }
 
 func (h *AuthHandler) SignUp(c *gin.Context) {
@@ -82,7 +83,12 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
-	user, err := h.authService.Login(c.Request.Context(), req.Email, req.Password)
+	user, session, err := h.authService.Login(
+		c.Request.Context(),
+		req.Email,
+		req.Password,
+		req.RememberMe,
+	)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"error": "Invalid credentials",
@@ -91,8 +97,15 @@ func (h *AuthHandler) Login(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"id":    user.ID,
-		"email": user.Email,
+		"user": gin.H{
+			"id":    user.ID,
+			"email": user.Email,
+		},
+		"session": gin.H{
+			"token":         session.Token,
+			"expires_at":    session.ExpiresAt.Format(time.RFC3339),
+			"is_remembered": session.IsRemembered,
+		},
 	})
 }
 

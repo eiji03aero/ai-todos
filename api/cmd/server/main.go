@@ -43,9 +43,10 @@ func main() {
 
 	// Setup repositories
 	userRepo := infraRepos.NewUserRepository(db)
+	userSessionRepo := infraRepos.NewPostgresUserSessionRepository(db)
 
 	// Setup services
-	authService := services.NewAuthService(userRepo)
+	authService := services.NewAuthService(userRepo, userSessionRepo)
 
 	// API Group
 	authGroup := r.Group("/api/auth")

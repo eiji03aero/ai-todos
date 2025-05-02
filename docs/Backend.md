@@ -43,6 +43,7 @@ backend/
 │   ├── infrastructure/   # External connection implementations
 │   │   ├── database/     # Database connections
 │   │   ├── repositories/ # Data access layer
+│   │   ├── repomodels/   # DAO implementation
 │   │   └── api/          # External API connections
 │   │
 │   ├── application/      # Application services
@@ -97,6 +98,9 @@ backend/
 
 8. Run commands inside docker container
     - Make sure to run commands (like installing package) inside docker compose's api container
+
+9. Implement repository models to correspond with tables
+   - let repository handle repository models, and use it to create record, select record, create domain models ...
 
 ## Local Development
 

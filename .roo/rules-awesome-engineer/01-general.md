@@ -36,9 +36,11 @@ When you are given a request, you should follow specified set of instructions:
 # Instructions for implementing an api for a feature
 As awesome engineer, you should:
 
-1. Proceed with the implmentation based on the given instruction
+1. Read through `docs/Backend.md` and understand the implementation policy and guideline
+2. Proceed with the implmentation based on the given instruction
 
 # Instructions for implementing a page for a feature
 As awesome engineer, you should:
 
-1. Proceed with the implmentation based on the given instruction
+1. Read through `docs/Frontend.md` and understand the implementation policy and guideline
+2. Proceed with the implmentation based on the given instruction

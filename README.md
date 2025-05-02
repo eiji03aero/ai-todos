@@ -124,19 +124,23 @@
 
 # Todo
 ## Backlog
-- [ ] Login
-    - [ ] unify the designer mode into one awesome-designer
+- [ ] authentication
     - [ ] api
+        - authentication for the protected routes
         - make sure to implement cookie authentication
         - implement appState endpoint to retrieve user info
     - [ ] ui
-- [ ] Top page
-- [ ] Nav layout
+        - implement mechanism to use appstate
+        - Top page
+            - make update to make use of appState
 - [ ] Create todo
-- [ ] Mark todo done
 - [ ] Edit todo
+    - [ ] Mark todo done
 - [ ] Delete todo
 - [ ] List and search todo
+
+---
+
 - [ ] Create project
 - [ ] Edit project
 - [ ] Delete project
@@ -152,6 +156,11 @@
     - search by tag
 
 ## Done
+- [x] Login
+    - [x] unify the designer mode into one awesome-designer
+    - [x] feature design
+    - [x] api
+    - [x] ui
 - [x] Signup
     - [x] api
         - implement awesome-engineer role as well

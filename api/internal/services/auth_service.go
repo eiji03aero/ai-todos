@@ -33,11 +33,18 @@ func (ve *ValidationError) Error() string {
 }
 
 type AuthService struct {
-	userRepo repositories.UserRepository
+	userRepo        repositories.UserRepository
+	userSessionRepo repositories.UserSessionRepository
 }
 
-func NewAuthService(repo repositories.UserRepository) *AuthService {
-	return &AuthService{userRepo: repo}
+func NewAuthService(
+	userRepo repositories.UserRepository,
+	userSessionRepo repositories.UserSessionRepository,
+) *AuthService {
+	return &AuthService{
+		userRepo:        userRepo,
+		userSessionRepo: userSessionRepo,
+	}
 }
 
 func (s *AuthService) SignUp(ctx context.Context, email, password, passwordConfirmation string) (*models.User, error) {
@@ -93,20 +100,41 @@ func (s *AuthService) CheckEmailUniqueness(ctx context.Context, email string) (b
 	return !exists, nil
 }
 
-func (s *AuthService) Login(ctx context.Context, email, password string) (*models.User, error) {
+func (s *AuthService) Login(
+	ctx context.Context,
+	email,
+	password string,
+	rememberMe bool,
+) (*models.User, *models.UserSession, error) {
+	// Validate input
+	if err := models.ValidateEmail(email); err != nil {
+		return nil, nil, err
+	}
+
+	// Validate password format
+	if err := models.ValidatePassword(password); err != nil {
+		return nil, nil, err
+	}
+
 	// Find user by email
 	user, err := s.userRepo.FindByEmail(ctx, email)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	if user == nil {
-		return nil, errors.New("user not found")
+		return nil, nil, errors.New("user not found")
 	}
 
 	// Verify password
 	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(password)); err != nil {
-		return nil, errors.New("invalid credentials")
+		return nil, nil, errors.New("invalid credentials")
 	}
 
-	return user, nil
+	// Create user session
+	session := models.NewUserSession(user.ID, rememberMe)
+	if err := s.userSessionRepo.CreateSession(ctx, session); err != nil {
+		return nil, nil, fmt.Errorf("error creating session: %w", err)
+	}
+
+	return user, session, nil
 }
