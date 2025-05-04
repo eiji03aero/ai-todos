@@ -11,20 +11,12 @@
 // Import Routes
 
 import { Route as rootRoute } from './app/routes/__root'
-import { Route as TestCenteredLayoutImport } from './app/routes/test-centered-layout'
 import { Route as SignupImport } from './app/routes/signup'
 import { Route as LoginImport } from './app/routes/login'
-import { Route as HogeImport } from './app/routes/hoge'
 import { Route as HelloworldImport } from './app/routes/helloworld'
 import { Route as IndexImport } from './app/routes/index'
 
 // Create/Update Routes
-
-const TestCenteredLayoutRoute = TestCenteredLayoutImport.update({
-  id: '/test-centered-layout',
-  path: '/test-centered-layout',
-  getParentRoute: () => rootRoute,
-} as any)
 
 const SignupRoute = SignupImport.update({
   id: '/signup',
@@ -35,12 +27,6 @@ const SignupRoute = SignupImport.update({
 const LoginRoute = LoginImport.update({
   id: '/login',
   path: '/login',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const HogeRoute = HogeImport.update({
-  id: '/hoge',
-  path: '/hoge',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -74,13 +60,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HelloworldImport
       parentRoute: typeof rootRoute
     }
-    '/hoge': {
-      id: '/hoge'
-      path: '/hoge'
-      fullPath: '/hoge'
-      preLoaderRoute: typeof HogeImport
-      parentRoute: typeof rootRoute
-    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -95,13 +74,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SignupImport
       parentRoute: typeof rootRoute
     }
-    '/test-centered-layout': {
-      id: '/test-centered-layout'
-      path: '/test-centered-layout'
-      fullPath: '/test-centered-layout'
-      preLoaderRoute: typeof TestCenteredLayoutImport
-      parentRoute: typeof rootRoute
-    }
   }
 }
 
@@ -110,75 +82,46 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/helloworld': typeof HelloworldRoute
-  '/hoge': typeof HogeRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
-  '/test-centered-layout': typeof TestCenteredLayoutRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/helloworld': typeof HelloworldRoute
-  '/hoge': typeof HogeRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
-  '/test-centered-layout': typeof TestCenteredLayoutRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/helloworld': typeof HelloworldRoute
-  '/hoge': typeof HogeRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
-  '/test-centered-layout': typeof TestCenteredLayoutRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/helloworld'
-    | '/hoge'
-    | '/login'
-    | '/signup'
-    | '/test-centered-layout'
+  fullPaths: '/' | '/helloworld' | '/login' | '/signup'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/helloworld'
-    | '/hoge'
-    | '/login'
-    | '/signup'
-    | '/test-centered-layout'
-  id:
-    | '__root__'
-    | '/'
-    | '/helloworld'
-    | '/hoge'
-    | '/login'
-    | '/signup'
-    | '/test-centered-layout'
+  to: '/' | '/helloworld' | '/login' | '/signup'
+  id: '__root__' | '/' | '/helloworld' | '/login' | '/signup'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   HelloworldRoute: typeof HelloworldRoute
-  HogeRoute: typeof HogeRoute
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
-  TestCenteredLayoutRoute: typeof TestCenteredLayoutRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   HelloworldRoute: HelloworldRoute,
-  HogeRoute: HogeRoute,
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
-  TestCenteredLayoutRoute: TestCenteredLayoutRoute,
 }
 
 export const routeTree = rootRoute
@@ -193,10 +136,8 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/helloworld",
-        "/hoge",
         "/login",
-        "/signup",
-        "/test-centered-layout"
+        "/signup"
       ]
     },
     "/": {
@@ -205,17 +146,11 @@ export const routeTree = rootRoute
     "/helloworld": {
       "filePath": "helloworld.tsx"
     },
-    "/hoge": {
-      "filePath": "hoge.tsx"
-    },
     "/login": {
       "filePath": "login.tsx"
     },
     "/signup": {
       "filePath": "signup.tsx"
-    },
-    "/test-centered-layout": {
-      "filePath": "test-centered-layout.tsx"
     }
   }
 }

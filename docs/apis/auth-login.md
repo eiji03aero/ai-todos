@@ -1,15 +1,13 @@
-## Login API
+# Login API
 
-### Overview
-Authenticate a user by email and password, creating a user session.
+## Overview
+Authenticates a user by email and password, creating a user session upon successful login.
 
-### HTTP Method
-POST
+## Endpoint Details
+- **HTTP Method**: POST
+- **Path**: `/api/auth/login`
 
-### API Path
-`/api/auth/login`
-
-### Request Body
+## Request Body
 ```json
 {
   "email": "string",
@@ -18,48 +16,42 @@ POST
 }
 ```
 
-### Request Validation
-- Email:
-  - Required
+### Input Validation
+- **Email**:
   - Must be a valid email format
-- Password:
-  - Required
-  - Minimum 8 characters
-  - Must contain at least one uppercase, one lowercase, and one number
+  - Maximum length: 255 characters
+  - Cannot be empty
 
-### Successful Response (200 OK)
-```json
-{
-  "user": {
-    "id": "string",
-    "email": "string"
-  },
-  "session": {
-    "token": "string",
-    "expires_at": "datetime",
-    "is_remembered": "boolean"
-  }
-}
-```
+- **Password**:
+  - Minimum length: 8 characters
+  - Must be a non-empty string
 
-### Error Responses
-- 400 Bad Request: Invalid input format
-- 401 Unauthorized: Incorrect email or password
-- 422 Unprocessable Entity: Validation errors
+- **Remember Me**:
+  - Boolean flag indicating whether to extend session duration
 
-### Processing Steps
-1. Validate input email and password format
-2. Retrieve user by email from database
-3. Verify password using secure hash comparison
+## User Authentication Process
+1. Validate input format and constraints
+2. Lookup user by email in the database
+3. Verify password using secure hashing
 4. If credentials are valid:
-   - Generate a new user session token
-   - Set session expiration based on "remember_me" flag
-   - Create and store UserSession
-5. Return user details and session token
-6. If credentials are invalid, return 401 Unauthorized
+   - Generate a new session ID
+   - Create a user session record in the database
+   - Set session ID in an HTTP-only, secure cookie in the response headers
+   - If `remember_me` is true, extend cookie expiration to provide a longer session duration
 
-### Security Considerations
-- Use bcrypt or similar secure password hashing
-- Generate cryptographically secure session tokens
-- Implement rate limiting for login attempts
-- Secure token storage and transmission
+## Session Management
+- Session ID is stored in an HTTP-only, secure cookie
+- Cookie attributes:
+  - `HttpOnly`: Prevents client-side script access
+  - `Secure`: Ensures transmission only over HTTPS
+  - `SameSite`: Set to `None` to allow cross-site cookie usage
+- Session duration:
+  - Standard session: Short-lived (e.g., 1 hour)
+  - Extended session (with `remember_me`): Longer duration (e.g., 30 days)
+
+## Security Considerations
+- Use bcrypt for password hashing
+- Validate and sanitize all input
+- Use secure, httpOnly cookies for session management
+- Rotate session IDs on critical events
+- Implement proper logout mechanism to invalidate sessions

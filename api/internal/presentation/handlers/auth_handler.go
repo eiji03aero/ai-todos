@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/eijiosakabe/ai-todos/api/internal/services"
+	"github.com/eijiosakabe/ai-todos/api/pkg/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -67,10 +68,20 @@ func (h *AuthHandler) SignUp(c *gin.Context) {
 		return
 	}
 
+	// Create user session after signup
+	session, err := h.authService.CreateSession(c.Request.Context(), user.ID, false)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to create session",
+		})
+		return
+	}
+
 	c.JSON(http.StatusCreated, gin.H{
 		"id":        user.ID,
 		"email":     user.Email,
 		"createdAt": user.CreatedAt.Format(time.RFC3339),
+		"sessionId": session.Token,
 	})
 }
 
@@ -101,8 +112,8 @@ func (h *AuthHandler) Login(c *gin.Context) {
 			"id":    user.ID,
 			"email": user.Email,
 		},
+		"sessionId": session.Token,
 		"session": gin.H{
-			"token":         session.Token,
 			"expires_at":    session.ExpiresAt.Format(time.RFC3339),
 			"is_remembered": session.IsRemembered,
 		},
@@ -131,11 +142,28 @@ func (h *AuthHandler) CheckEmail(c *gin.Context) {
 	})
 }
 
-// SetupRoutes sets up the authentication routes
-func SetupAuthRoutes(r *gin.RouterGroup, authService *services.AuthService) {
-	handler := NewAuthHandler(authService)
+func (h *AuthHandler) ValidateSession(c *gin.Context) {
+	user, err := utils.GetCurrentUser(c)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid or expired session"})
+		return
+	}
 
-	r.POST("/signup", handler.SignUp)
-	r.POST("/login", handler.Login)
-	r.GET("/check-email", handler.CheckEmail)
+	// Since user model has no expiresAt, we omit it in response
+	c.JSON(http.StatusOK, gin.H{
+		"userId": user.ID,
+	})
+}
+
+func (h *AuthHandler) AppState(c *gin.Context) {
+	user, err := utils.GetCurrentUser(c)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"userId": user.ID,
+		"email":  user.Email,
+	})
 }

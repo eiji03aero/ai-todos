@@ -1,8 +1,8 @@
 openapi: 3.0.0
 info:
-  title: User Authentication API
+  title: API
   version: 1.0.0
-  description: APIs for user authentication, signup, and account management
+  description: APIs for AI todos application
 
 paths:
   /api/auth/check-email:
@@ -25,14 +25,11 @@ paths:
                 properties:
                   isUnique:
                     type: boolean
-        '400':
-          description: Invalid email format
-        '500':
-          description: Server error during email check
 
   /api/auth/signup:
     post:
       summary: User signup
+      description: Create a new user account with email and password
       requestBody:
         required: true
         content:
@@ -47,13 +44,22 @@ paths:
                 email:
                   type: string
                   format: email
+                  description: User's email address (must be unique)
                 password:
                   type: string
+                  format: password
                   minLength: 8
-                  description: Password must contain at least one uppercase, one lowercase, and one number
+                  description: >
+                    Password requirements:
+                    - Minimum 8 characters
+                    - Must contain at least one uppercase letter
+                    - Must contain at least one lowercase letter
+                    - Must contain at least one number
+                    - Must contain at least one special character
                 password_confirmation:
                   type: string
-                  minLength: 8
+                  format: password
+                  description: Must exactly match the password field
       responses:
         '201':
           description: User successfully created
@@ -64,28 +70,40 @@ paths:
                 properties:
                   id:
                     type: string
+                    description: Unique user identifier
                   email:
                     type: string
+                    format: email
                   createdAt:
                     type: string
                     format: date-time
-        '400':
-          description: Invalid input
+                    description: Timestamp of user account creation
+                  sessionId:
+                    type: string
+                    description: Session token for authentication
+
+  /api/auth/validate-session:
+    post:
+      summary: Validate user session
+      description: Validates the current user session and returns whether it is valid or expired.
+      responses:
+        '200':
+          description: Session validation result
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  error:
-                    type: string
-        '409':
-          description: Email already exists
-        '500':
-          description: Internal server error
+                  valid:
+                    type: boolean
+                    description: Indicates if the session is valid
+                required:
+                  - valid
 
   /api/auth/login:
     post:
       summary: User login
+      description: Authenticate a user and create a session
       requestBody:
         required: true
         content:
@@ -101,10 +119,8 @@ paths:
                   format: email
                 password:
                   type: string
-                  description: User's account password
                 remember_me:
                   type: boolean
-                  description: Persist login session across browser sessions
       responses:
         '200':
           description: Successful login
@@ -120,29 +136,66 @@ paths:
                         type: string
                       email:
                         type: string
+                  sessionId:
+                    type: string
+                    description: Session token for authentication
                   session:
                     type: object
                     properties:
-                      token:
-                        type: string
                       expires_at:
                         type: string
                         format: date-time
                       is_remembered:
                         type: boolean
-        '400':
-          description: Invalid request format
-        '401':
-          description: Invalid credentials
-        '422':
-          description: Validation error
-        '500':
-          description: Internal server error
+
+  /api/auth/app_state:
+    get:
+      summary: Get current application state for authenticated user
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Current app state data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userId:
+                    type: string
+                  email:
+                    type: string
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   schemas:
     ErrorResponse:
       type: object
       properties:
         error:
           type: string
+        message:
+          type: string
+
+    ValidationErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Validation Failed"
+        details:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+                example: "email"
+              message:
+                type: string
+                example: "Email is already registered"

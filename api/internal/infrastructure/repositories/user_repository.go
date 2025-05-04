@@ -70,6 +70,20 @@ func (r *UserRepository) FindByEmail(ctx context.Context, email string) (*models
 	return repoUser.ToDomainModel(), nil
 }
 
+func (r *UserRepository) FindByID(ctx context.Context, id string) (*models.User, error) {
+	var repoUser repoModels.User
+	result := r.db.WithContext(ctx).Where("id = ?", id).First(&repoUser)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+		return nil, result.Error
+	}
+
+	// Convert repository model to domain model
+	return repoUser.ToDomainModel(), nil
+}
+
 // Migrate creates the users table if it doesn't exist
 func (r *UserRepository) Migrate() error {
 	return r.db.AutoMigrate(&repoModels.User{})

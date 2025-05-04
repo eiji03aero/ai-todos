@@ -19,7 +19,7 @@ export function SignUpForm() {
     },
     onSubmit: async ({ value }) => {
       mutate({
-        body: { 
+        data: { 
           email: value.email, 
           password: value.password,
           password_confirmation: value.passwordConfirmation

@@ -11,4 +11,5 @@ type UserSessionRepository interface {
 	FindSessionByToken(ctx context.Context, token string) (*models.UserSession, error)
 	DeleteSession(ctx context.Context, token string) error
 	DeleteExpiredSessions(ctx context.Context) error
+	UpdateSession(ctx context.Context, session *models.UserSession) error
 }

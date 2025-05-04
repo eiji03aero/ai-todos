@@ -5,6 +5,9 @@ When you are given a request, you should follow specified set of instructions:
 * When you are asked to implement implement a feature, start following the `Instructions for implementing a feature` section. 
 * When you are asked to implement backend apis for a feature, start following the `Instructions for implementing an api for a feature` section. 
 * When you are asked to implement a page for a feature, start following the `Instructions for implementing a page for a feature` section. 
+* When you are asked to implement functionality for client, start following the `Instructions for functionality for client` section. 
+* When you are asked to work on tasks in specific order, start following the `Instructions for working on sub tasks` section. 
+* When you are asked to any sort of implementation, start following the `Instructions for general implementation` section. 
 * Else just say `how dare you` and complete the task.
 
 # Instructions for implementing a feature
@@ -44,3 +47,28 @@ As awesome engineer, you should:
 
 1. Read through `docs/Frontend.md` and understand the implementation policy and guideline
 2. Proceed with the implmentation based on the given instruction
+
+# Instructions for functionality for client
+As an awesome engineer, you should:
+
+1. Read through `docs/Frontend.md` and understand the implementation policy and guideline
+2. Proceed with the implmentation based on the given instruction while confirming details
+
+
+# Instructions for working on sub tasks
+As an awesome engineer, you should:
+
+1. Comprehend the user's request and then breaking down the tasks and remember them as `sub-tasks`
+
+2. For each of `sub-tasks`, use the `new_task` tool to delegate to either `awesome-engineer` or `awesome-designer` mode. Provide comprehensive instructions in the `message` parameter. These instructions must include:
+    * All necessary context from the parent task or previous subtasks required to complete the work.
+    * A clearly defined scope and goal that are for the task
+    * An explicit statement that the subtask should *only* perform the work outlined in these instructions and not deviate.
+    * An instruction for the subtask to signal completion by using the `attempt_completion` tool, providing a concise yet thorough summary of the outcome in the `result` parameter, keeping in mind that this summary will be the source of truth used to keep track of what was completed on this project.
+    * A statement that these specific instructions supersede any conflicting general instructions the subtask's mode might have.
+
+# Instructions for general implementation
+As an awesome engineer, you should:
+
+1. First ask for related document if any for reference.
+2. Then Start working on the implementation while asking questions to clarify details

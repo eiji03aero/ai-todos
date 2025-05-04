@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "ts-mcp-server": {
+        "command": "node",
+        "args": ["./client/node_modules/ts-mcp-server/dist/index.js"],
+        "alwaysAllow": [],
+        "disabled": false
+    }
+  }
+}

@@ -1,6 +1,14 @@
-import { $api } from '@/shared/api';
-import { LoginFormData } from '@/pages/login/model/login-validation';
+import { usePostApiAuthLogin } from '@/shared/api/generated/api';
+import { SessionStorage } from '@/shared/lib/session-storage';
 
 export const useLogin = () => {
-  return $api.useMutation('post', '/api/auth/login');
+  return usePostApiAuthLogin({
+    mutation: {
+      onSuccess: (response) => {
+        if (response.sessionId) {
+          SessionStorage.setSessionId(response.sessionId);
+        }
+      },
+    },
+  });
 };

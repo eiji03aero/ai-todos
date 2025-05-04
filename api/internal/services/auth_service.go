@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"golang.org/x/crypto/bcrypt"
 
@@ -45,6 +46,14 @@ func NewAuthService(
 		userRepo:        userRepo,
 		userSessionRepo: userSessionRepo,
 	}
+}
+
+func (s *AuthService) CreateSession(ctx context.Context, userID string, isRemembered bool) (*models.UserSession, error) {
+	session := models.NewUserSession(userID, isRemembered)
+	if err := s.userSessionRepo.CreateSession(ctx, session); err != nil {
+		return nil, fmt.Errorf("failed to create session: %w", err)
+	}
+	return session, nil
 }
 
 func (s *AuthService) SignUp(ctx context.Context, email, password, passwordConfirmation string) (*models.User, error) {
@@ -137,4 +146,38 @@ func (s *AuthService) Login(
 	}
 
 	return user, session, nil
+}
+
+// ValidateSession checks if a given session token is valid
+func (s *AuthService) ValidateSession(ctx context.Context, sessionToken string) (*models.User, error) {
+	// Find the session
+	session, err := s.userSessionRepo.FindSessionByToken(ctx, sessionToken)
+	if err != nil {
+		return nil, fmt.Errorf("error finding session: %w", err)
+	}
+	if session == nil {
+		return nil, errors.New("session not found")
+	}
+
+	// Check if session is expired
+	if session.IsExpired() {
+		// Optional: Delete expired session
+		_ = s.userSessionRepo.DeleteSession(ctx, sessionToken)
+		return nil, errors.New("session expired")
+	}
+
+	// Fetch the associated user
+	user, err := s.userRepo.FindByID(ctx, session.UserID)
+	if err != nil {
+		return nil, fmt.Errorf("error finding user: %w", err)
+	}
+	if user == nil {
+		return nil, errors.New("user not found")
+	}
+
+	// Update last activity timestamp
+	session.LastActivity = time.Now()
+	_ = s.userSessionRepo.UpdateSession(ctx, session)
+
+	return user, nil
 }

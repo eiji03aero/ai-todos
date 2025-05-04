@@ -1,56 +1,43 @@
-# User SignUp API
+# Signup API Endpoint
 
 ## Overview
-This API endpoint allows new users to create an account in the system by providing their email address and a secure password.
+The Signup API endpoint allows new users to create an account by providing their email, password, and password confirmation.
 
 ## Endpoint Details
 - **HTTP Method**: POST
 - **Path**: `/api/auth/signup`
-
-## Related Domain Models
-- **User Model**: `docs/models/User.md`
-  * This API directly interacts with the User domain model
-  * Creates a new User record in the system
-  * Transforms input data into User model properties:
-    - Generates `id` (system-generated unique identifier)
-    - Stores `email` from input
-    - Creates `password_hash` by securely hashing the input password
-    - Sets `createdAt` and `updatedAt` timestamps
+- **Authentication**: Public (No authentication required)
 
 ## Request Body
 ```json
 {
   "email": "string",
   "password": "string",
-  "password_confirmation": "string"
+  "passwordConfirmation": "string"
 }
 ```
 
-## Input Validations
-### Email
-- Must be a valid email format (RFC 5322 standard)
-- Cannot be empty
-- Must be unique in the system
+### Request Body Validation
+- `email`:
+  - Must be a valid email format
+  - Must be unique (not already registered)
+  - Required field
 
-### Password
-- Minimum 8 characters long
-- Must contain:
-  * At least one uppercase letter
-  * At least one lowercase letter
-  * At least one number
-- Password and password_confirmation must match
+- `password`:
+  - Minimum length: 8 characters
+  - Must contain at least:
+    - 1 uppercase letter
+    - 1 lowercase letter
+    - 1 number
+    - 1 special character
+  - Required field
 
-## Processing Steps
-1. Validate input fields
-   - Check email format
-   - Verify email uniqueness
-   - Validate password complexity
-2. Confirm password matches password_confirmation
-3. Hash password using secure hashing algorithm (bcrypt)
-4. Create new user record
-5. Automatically log in the user
+- `passwordConfirmation`:
+  - Must exactly match the `password` field
+  - Required field
 
-## Responses
+## Response
+
 ### Success Response (201 Created)
 ```json
 {
@@ -60,17 +47,61 @@ This API endpoint allows new users to create an account in the system by providi
 }
 ```
 
+### Session Cookie
+- Upon successful signup, a user session is created.
+- The session ID is set in a secure, HTTP-only cookie in the response headers.
+- Cookie attributes:
+  - `HttpOnly`: Prevents client-side script access to the cookie.
+  - `Secure`: Ensures the cookie is sent only over HTTPS connections.
+  - `SameSite`: Set to `None` to allow cross-site cookie usage.
+- The cookie enables the user to remain authenticated in subsequent requests.
+
 ### Error Responses
-- 400 Bad Request: 
-  * Invalid email format
-  * Password too weak
-  * Passwords do not match
-- 409 Conflict: 
-  * Email already exists
-- 500 Internal Server Error: 
-  * Unexpected system error during registration
+
+#### 400 Bad Request (Validation Errors)
+```json
+{
+  "error": "Validation Failed",
+  "details": [
+    {
+      "field": "email",
+      "message": "Email is already registered"
+    },
+    {
+      "field": "password",
+      "message": "Password does not meet strength requirements"
+    },
+    {
+      "field": "passwordConfirmation",
+      "message": "Passwords do not match"
+    }
+  ]
+}
+```
+
+#### 500 Internal Server Error
+```json
+{
+  "error": "Internal Server Error",
+  "message": "An unexpected error occurred during signup"
+}
+```
+
+## Processing Steps
+1. Validate input format and constraints
+2. Check email uniqueness
+3. Validate password strength
+4. Confirm password matches
+5. Hash password securely
+6. Create user record in database
+7. Return user details or appropriate error
 
 ## Security Considerations
-- Passwords are never stored in plain text
-- Use bcrypt or equivalent secure hashing algorithm
-- Implement rate limiting to prevent brute-force attacks
+- Password is hashed using bcrypt with default cost
+- Comprehensive input validation
+- Unique email constraint
+- No sensitive information returned in response
+
+## Related Documents
+- [User Model Specification](/docs/models/User.md)
+- [Authentication Feature](/docs/features/Authentication.md)

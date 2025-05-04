@@ -20,4 +20,7 @@ type UserRepository interface {
 
 	// Find a user by email
 	FindByEmail(ctx context.Context, email string) (*models.User, error)
+
+	// Find a user by ID
+	FindByID(ctx context.Context, id string) (*models.User, error)
 }

@@ -1,21 +1,12 @@
-import { $api } from '@/shared/api'
-import { z } from 'zod'
+import { z } from 'zod';
+import { useGetApiAuthCheckEmail } from '@/shared/api/generated/api';
 
-const emailSchema = z.string().email('Invalid email format')
+const emailSchema = z.string().email('Invalid email format');
 
 export function useCheckEmailUniqueness(email: string) {
-  return $api.useQuery('get', '/api/auth/check-email', {
-    params: {
-      query: { email }
+  return useGetApiAuthCheckEmail({ email }, {
+    query: {
+      enabled: !!email,
     },
-    query: () => {
-      // Validate email format first
-      try {
-        emailSchema.parse(email)
-      } catch (validationError) {
-        throw new Error('Invalid email format')
-      }
-    },
-    enabled: !!email, // Only run query if email is not empty
-  })
+  });
 }

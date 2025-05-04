@@ -48,6 +48,17 @@ func (r *PostgresUserSessionRepository) DeleteSession(ctx context.Context, token
 	return result.Error
 }
 
+func (r *PostgresUserSessionRepository) UpdateSession(ctx context.Context, session *models.UserSession) error {
+	result := r.db.WithContext(ctx).
+		Model(&repomodels.UserSession{}).
+		Where("token = ?", session.Token).
+		Updates(map[string]interface{}{
+			"last_activity": session.LastActivity,
+			"expires_at":    session.ExpiresAt,
+		})
+	return result.Error
+}
+
 func (r *PostgresUserSessionRepository) DeleteExpiredSessions(ctx context.Context) error {
 	result := r.db.WithContext(ctx).
 		Where("expires_at <= NOW()").

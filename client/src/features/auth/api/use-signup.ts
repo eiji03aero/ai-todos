@@ -1,5 +1,14 @@
-import { $api } from '@/shared/api/client'
+import { usePostApiAuthSignup } from '@/shared/api/generated/api';
+import { SessionStorage } from '@/shared/lib/session-storage';
 
 export const useSignup = () => {
-  return $api.useMutation('post', '/api/auth/signup')
-}
+  return usePostApiAuthSignup({
+    mutation: {
+      onSuccess: (response) => {
+        if (response.sessionId) {
+          SessionStorage.setSessionId(response.sessionId);
+        }
+      },
+    },
+  });
+};

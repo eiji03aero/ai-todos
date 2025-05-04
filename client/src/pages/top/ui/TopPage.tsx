@@ -1,13 +1,10 @@
 import React from 'react'
 import { MainAppLayout } from '@/widgets/main-app-layout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card'
+import { useAppState } from '@/entities/app-state/model/use-app-state'
 
 export const TopPage: React.FC = () => {
-  // Placeholder for user data - will be replaced with actual auth context later
-  const user = { 
-    name: 'John Doe', 
-    email: 'john.doe@example.com' 
-  }
+  const { appState } = useAppState()
 
   return (
     <MainAppLayout>
@@ -18,7 +15,7 @@ export const TopPage: React.FC = () => {
           </CardHeader>
           <CardContent>
             <p className="text-lg">
-              Hello, {user.name || user.email}!
+              Hello, {appState?.email || 'User'}!
             </p>
             <p className="text-muted-foreground mt-2">
               This is your personal dashboard.

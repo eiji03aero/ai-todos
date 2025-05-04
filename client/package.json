@@ -7,7 +7,7 @@
     "dev": "vinxi dev --host 0.0.0.0 --port 3000 --debug",
     "build": "vinxi build",
     "start": "vinxi start",
-    "generate:api": "openapi-typescript ../docs/openapi.yml -o src/lib/api/openapi.d.ts"
+    "generate:api": "orval --config orval.config.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",
@@ -44,6 +44,7 @@
     "@tanstack/react-start": "^1.115.3",
     "@tanstack/start": "^1.115.3",
     "@types/canvas-confetti": "^1.9.0",
+    "axios": "^1.9.0",
     "canvas-confetti": "^1.9.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -66,14 +67,15 @@
     "tw-animate-css": "^1.2.5",
     "vaul": "^1.1.2",
     "vinxi": "0.5.1",
-    "zod": "^3.24.3"
+    "zod": "^3.24.3",
+    "zustand": "^5.0.4"
   },
   "devDependencies": {
+    "@orval/zod": "^7.9.0",
     "@tanstack/react-query": "^5.74.4",
     "@types/react": "^19.0.8",
-    "openapi-fetch": "^0.13.5",
-    "openapi-react-query": "^0.3.1",
-    "openapi-typescript": "^7.6.1",
+    "orval": "^7.9.0",
+    "ts-mcp-server": "github:eiji03aero/ts-mcp-server",
     "typescript": "^5.8.3",
     "vite-tsconfig-paths": "^5.1.4"
   }

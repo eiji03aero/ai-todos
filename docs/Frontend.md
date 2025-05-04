@@ -16,6 +16,8 @@
 - **HTTP Communication**: 
   - openapi-fetch
   - @tanstack/react-query (State Management for HTTP Requests)
+- **State management**: 
+  - zustand
 
 ## Project Structure: Feature Sliced Design
 
@@ -177,29 +179,10 @@ We have following layout implementation for this app:
 - pass validation schema created by zod to useForm's `validators.onChange` property
 
 ### Implement http request
-- Use openapi-fetch. wrapped implementation `$api` is exported from src/shared/api
-- When implement a http request, create a custom hook that uses openapi-fetch's react-query integrations like useQuery, useMutation provided by the wrapped implementation `$api`
-  - You don't need to pass type arguments to these integrations useQuery, useMutation
-  - please check following documents for how to use respective integrations
-    - $api.useQuery: https://openapi-ts.dev/openapi-react-query/use-query
-      - Reference:
-        ```
-          const { data, error, isLoading } = $api.useQuery("get", "/users/{user_id}", {
-            params: {
-              path: { user_id: 5 },
-            },
-          });
-        ```
-    - $api.useMutation: https://openapi-ts.dev/openapi-react-query/use-mutation
-      - please use lowercase for the method
-      - Reference
-        ```
-        // argument reference
-        const mutation = $api.useMutation(method, path, queryOptions, queryClient);
-        // example usage
-        const mutation = $api.useMutation("patch", "/users");
-        ```
-- When using react-query integrations like useQuery, useMutation, please make sure to inspect and understand the type signature of the provided hook so that you won't pass wrong arguments
+- Use orval generated apis. generated implementations are exported from src/shared/api/generated/api.ts
+- When implement a http request:
+  - use dedicated react-query hook exported from the api.ts
+  - please inspect the export members of the api.ts file and then pick the one that meets the requirement
 - Try to define the custom hook in features layer under proper slice
 
 ## Running npm commands

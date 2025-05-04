@@ -10,6 +10,9 @@
 - Application overview file
     - `docs/Application.md`
     - defines domain models
+- Architecture design file
+    - `docs/architectures/[architecture-name].md`
+    - design files for describing system architecture
 - Feature design file
     - `docs/features/[feature-name].md`
     - have file path to related to api / ui design file
@@ -102,6 +105,7 @@
     - どうにも、型を自動生成するためか、$api.useQueryなどの引数をうまく埋められない
     - 一発目は大体頓珍漢なことをする
     - とりあえずファイルを生成させて、typescriptエラーを確認させて、修正をさせるという選択肢はあるが、これも直せるとは限らない
+    - 乗り換えよう・・・orval使ってみるか
 - signupのフロントエンド実装
     - 結構メチャクチャなものが上がってきた
     - labelが2重
@@ -119,20 +123,24 @@
 - 結合した時の修正が結局必要かつ面倒
     - api作って、フロントつくって結合して動作確認の手順が必要
     - 結合試験もやらせてしまいたいが・・・
+- ライブラリの置き換えはかなりスムーズに行った
+    - 設定ファイルの作成はちょっと手間取ったが
+    - 置き換えの段取りを決めてもらってその通りに進めることでおおよそうまくいった
+- modelの違い
+    - openai 4.1 mini
+        - 動作はやたら早い
+        - しかしちょっとあほ
+            - ファイルのデリート時に、diffだけ出して完了したことにしている
+        - なんかpromptが複雑すぎるから上位モデルを検討してーーーという断末魔を上げることがある
+            - context windowの問題かな
+    - claude 3.5 haiku
+        - 基本的にこちらの方が仕事は丁寧
+        - しかしoverloadedなんちゃらというエラーがしばしば出る。原因は不明
 
 ---
 
 # Todo
 ## Backlog
-- [ ] authentication
-    - [ ] api
-        - authentication for the protected routes
-        - make sure to implement cookie authentication
-        - implement appState endpoint to retrieve user info
-    - [ ] ui
-        - implement mechanism to use appstate
-        - Top page
-            - make update to make use of appState
 - [ ] Create todo
 - [ ] Edit todo
     - [ ] Mark todo done
@@ -156,6 +164,16 @@
     - search by tag
 
 ## Done
+- [x] authentication
+    - [x] replace open-api fetch with orval
+    - [x] api
+        - authentication for the protected routes
+        - make sure to implement cookie authentication
+        - implement appState endpoint to retrieve user info
+    - [x] ui
+        - implement mechanism to use appstate
+        - Top page
+            - make update to make use of appState
 - [x] Login
     - [x] unify the designer mode into one awesome-designer
     - [x] feature design

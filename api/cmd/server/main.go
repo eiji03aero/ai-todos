@@ -49,10 +49,7 @@ func main() {
 	authService := services.NewAuthService(userRepo, userSessionRepo)
 
 	// API Group
-	authGroup := r.Group("/api/auth")
-	{
-		handlers.SetupAuthRoutes(authGroup, authService)
-	}
+	handlers.RegisterRoutes(r.Group(""), authService)
 
 	// Get port from environment or default to 4200
 	port := os.Getenv("PORT")

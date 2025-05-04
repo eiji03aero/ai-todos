@@ -27,7 +27,7 @@ export const LoginForm: React.FC = () => {
   const onSubmit = async (data: LoginFormData) => {
     try {
       await loginMutation.mutateAsync({ 
-        body: {
+        data: {
           email: data.email,
           password: data.password,
           remember_me: data.rememberMe
